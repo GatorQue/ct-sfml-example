@@ -7,6 +7,7 @@ include(${PROJECT_BINARY_DIR}/Autoairplane.cmake)
 include(${PROJECT_BINARY_DIR}/AutoairplaneDeps.cmake)
 
 # Add SFML libraries for main
+message(STATUS "SFML_LIBRARIES=${SFML_LIBRARIES}")
 set(main_LIBS airplane ${SFML_LIBRARIES})
 
 # Add library if library sources was defined in Autoairplane.cmake
@@ -14,6 +15,7 @@ if(LIB_SOURCES)
   # Add comprehensive library for this folder
   ct_add_lib(airplane
     INSTALL ${airplane_INSTALL}
+    TYPE STATIC
     SOURCES ${LIB_SOURCES}
     HEADERS ${LIB_HEADERS})
 endif()
