@@ -21,13 +21,13 @@ SoundPlayer::SoundPlayer() :
   soundBuffers(),
   sounds()
 {
-  soundBuffers.load(SoundEffect::AlliedGunfire, "assets/sounds/AlliedGunfire.wav");
-  soundBuffers.load(SoundEffect::EnemyGunfire, "assets/sounds/EnemyGunfire.wav");
-  soundBuffers.load(SoundEffect::Explosion1, "assets/sounds/Explosion1.wav");
-  soundBuffers.load(SoundEffect::Explosion2, "assets/sounds/Explosion2.wav");
-  soundBuffers.load(SoundEffect::LaunchMissile, "assets/sounds/LaunchMissile.wav");
-  soundBuffers.load(SoundEffect::CollectPickup, "assets/sounds/CollectPickup.wav");
-  soundBuffers.load(SoundEffect::Button, "assets/sounds/Button.wav");
+  soundBuffers.load_now(SoundEffect::AlliedGunfire, "assets/sounds/AlliedGunfire.wav");
+  soundBuffers.load_now(SoundEffect::EnemyGunfire, "assets/sounds/EnemyGunfire.wav");
+  soundBuffers.load_now(SoundEffect::Explosion1, "assets/sounds/Explosion1.wav");
+  soundBuffers.load_now(SoundEffect::Explosion2, "assets/sounds/Explosion2.wav");
+  soundBuffers.load_now(SoundEffect::LaunchMissile, "assets/sounds/LaunchMissile.wav");
+  soundBuffers.load_now(SoundEffect::CollectPickup, "assets/sounds/CollectPickup.wav");
+  soundBuffers.load_now(SoundEffect::Button, "assets/sounds/Button.wav");
 
   // Listener points towards the screen (default in SFML)
   sf::Listener::setDirection(0.f, 0.f, -1.f);

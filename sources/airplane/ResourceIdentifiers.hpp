@@ -10,6 +10,17 @@ namespace sf
   class Texture;
 }
 
+namespace Resources
+{
+  enum Type
+  {
+    Font,
+    Shader,
+    Sound,
+    Texture
+  };
+}
+
 namespace Fonts
 {
   enum ID

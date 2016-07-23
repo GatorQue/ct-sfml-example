@@ -179,11 +179,11 @@ bool World::hasPlayerReachedEnd() const
 
 void World::loadTextures()
 {
-  textures.load(Textures::Entities, "assets/textures/Entities.png");
-  textures.load(Textures::Jungle, "assets/textures/Jungle.png");
-  textures.load(Textures::Explosion, "assets/textures/Explosion.png");
-  textures.load(Textures::Particle, "assets/textures/Particle.png");
-  textures.load(Textures::FinishLine, "assets/textures/FinishLine.png");
+  textures.load_now(Textures::Entities, "assets/textures/Entities.png");
+  textures.load_now(Textures::Jungle, "assets/textures/Jungle.png");
+  textures.load_now(Textures::Explosion, "assets/textures/Explosion.png");
+  textures.load_now(Textures::Particle, "assets/textures/Particle.png");
+  textures.load_now(Textures::FinishLine, "assets/textures/FinishLine.png");
 }
 
 void World::adaptPlayerPosition()

@@ -6,10 +6,10 @@ BloomEffect::BloomEffect() :
   firstPassTextures(),
   secondPassTextures()
 {
-  shaders.load(Shaders::BrightnessPass, "assets/shaders/Fullpass.vert", "assets/shaders/Brightness.frag");
-  shaders.load(Shaders::DownSamplePass, "assets/shaders/Fullpass.vert", "assets/shaders/DownSample.frag");
-  shaders.load(Shaders::GaussianBlurPass, "assets/shaders/Fullpass.vert", "assets/shaders/GuassianBlur.frag");
-  shaders.load(Shaders::AddPass, "assets/shaders/Fullpass.vert", "assets/shaders/Add.frag");
+  shaders.load_now(Shaders::BrightnessPass, "assets/shaders/Fullpass.vert", "assets/shaders/Brightness.frag");
+  shaders.load_now(Shaders::DownSamplePass, "assets/shaders/Fullpass.vert", "assets/shaders/DownSample.frag");
+  shaders.load_now(Shaders::GaussianBlurPass, "assets/shaders/Fullpass.vert", "assets/shaders/GuassianBlur.frag");
+  shaders.load_now(Shaders::AddPass, "assets/shaders/Fullpass.vert", "assets/shaders/Add.frag");
 }
 
 void BloomEffect::apply(const sf::RenderTexture& input, sf::RenderTarget& output)

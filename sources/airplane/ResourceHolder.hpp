@@ -2,6 +2,8 @@
 #define SOURCES_SCOUT_RESOURCEHOLDER_HPP_
 
 #include <cassert>
+#include <functional>
+#include <list>
 #include <map>
 #include <memory>
 #include <string>
@@ -11,43 +13,88 @@ template <typename Resource, typename Identifier>
 class ResourceHolder
 {
   public:
-    void load(Identifier id, const std::string& filename);
+    typedef std::unique_ptr<typename Resource> Ptr;
+    typedef std::function<void()> PtrFunc;
+
+    void load_later(Identifier id, const std::string& filename);
 
     template <typename Parameter>
-    void load(Identifier id, const std::string& filename, const Parameter& secondParam);
+    void load_later(Identifier id, const std::string& filename, const Parameter& secondParam);
+
+    void load_now(Identifier id, const std::string& filename);
+
+    template <typename Parameter>
+    void load_now(Identifier id, const std::string& filename, const Parameter& secondParam);
 
     Resource& get(Identifier id);
     const Resource& get(Identifier id) const;
 
-  private:
-    std::map<Identifier, std::unique_ptr<Resource> > resourceMap;
+    bool hasResource(Identifier ID);
+    
+    size_t getPendingCount();
+    void loadNextPending();
 
-    void insertResource(Identifier id, std::unique_ptr<Resource> resource);
+  private:
+    std::map<Identifier, Ptr > resourceMap;
+    std::list<PtrFunc> pendingResources;
+    
+    void insertResource(Identifier id, Ptr resource);
 };
 
 template <typename Resource, typename Identifier>
-void ResourceHolder<Resource, Identifier>::load(Identifier id, const std::string& filename)
+void ResourceHolder<Resource, Identifier>::load_later(Identifier id, const std::string& filename)
 {
-  std::unique_ptr<Resource> resource(new Resource());
-  if(!resource->loadFromFile(filename))
+  if(!hasResource(id))
   {
-    throw std::runtime_error("ResourceHolder::load - Failed to load " + filename);
+    pendingResources.push_back([this,id,filename]()
+      {
+        load_now(id, filename);
+      });
   }
-
-  insertResource(id, std::move(resource));
 }
 
 template <typename Resource, typename Identifier>
 template <typename Parameter>
-void ResourceHolder<Resource, Identifier>::load(Identifier id, const std::string& filename, const Parameter& secondParam)
+void ResourceHolder<Resource, Identifier>::load_later(Identifier id, const std::string& filename, const Parameter& secondParam)
 {
-  std::unique_ptr<Resource> resource(new Resource());
-  if(!resource->loadFromFile(filename, secondParam))
+  if(!hasResource(id))
   {
-    throw std::runtime_error("ResourceHolder::load - Failed to load " + filename);
+    pendingResources.push_back([this,id,filename,secondParam]()
+      {
+        load_now(id, filename, secondParam);
+      });
   }
+}
 
-  insertResource(id, std::move(resource));
+template <typename Resource, typename Identifier>
+void ResourceHolder<Resource, Identifier>::load_now(Identifier id, const std::string& filename)
+{
+  if(!hasResource(id))
+  {
+    Ptr resource(new Resource());
+    if(!resource->loadFromFile(filename))
+    {
+      throw std::runtime_error("ResourceHolder::load - Failed to load " + filename);
+    }
+
+    insertResource(id, std::move(resource));
+  }
+}
+
+template <typename Resource, typename Identifier>
+template <typename Parameter>
+void ResourceHolder<Resource, Identifier>::load_now(Identifier id, const std::string& filename, const Parameter& secondParam)
+{
+  if(!hasResource(id))
+  {
+    Ptr resource(new Resource());
+    if(!resource->loadFromFile(filename, secondParam))
+    {
+      throw std::runtime_error("ResourceHolder::load - Failed to load " + filename);
+    }
+
+    insertResource(id, std::move(resource));
+  }
 }
 
 template <typename Resource, typename Identifier>
@@ -69,7 +116,31 @@ const Resource& ResourceHolder<Resource, Identifier>::get(Identifier id) const
 }
 
 template <typename Resource, typename Identifier>
-void ResourceHolder<Resource, Identifier>::insertResource(Identifier id, std::unique_ptr<Resource> resource)
+bool ResourceHolder<Resource, Identifier>::hasResource(Identifier id)
+{
+  auto itr = resourceMap.find(id);
+  return itr != resourceMap.end();
+}
+
+template <typename Resource, typename Identifier>
+size_t ResourceHolder<Resource, Identifier>::getPendingCount()
+{
+  return pendingResources.size();
+}
+
+template <typename Resource, typename Identifier>
+void ResourceHolder<Resource, Identifier>::loadNextPending()
+{
+  auto loadFunction = pendingResources.front();
+  if(loadFunction)
+  {
+    loadFunction();
+    pendingResources.pop_front();
+  }
+}
+
+template <typename Resource, typename Identifier>
+void ResourceHolder<Resource, Identifier>::insertResource(Identifier id, Ptr resource)
 {
   auto inserted = resourceMap.insert(std::make_pair(id, std::move(resource)));
   assert(inserted.second);

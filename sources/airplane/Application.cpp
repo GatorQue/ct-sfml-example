@@ -4,6 +4,7 @@
 #include "StringUtils.hpp"
 #include "GameOverState.hpp"
 #include "GameState.hpp"
+#include "LoadingState.hpp"
 #include "MenuState.hpp"
 #include "MultiplayerGameState.hpp"
 #include "PauseState.hpp"
@@ -27,10 +28,10 @@ Application::Application() :
 {
   window.setKeyRepeatEnabled(false);
 
-  fonts.load(Fonts::Main, "assets/fonts/Sansation.ttf");
+  fonts.load_now(Fonts::Main, "assets/fonts/Sansation.ttf");
 
-  textures.load(Textures::TitleScreen, "assets/textures/TitleScreen.png");
-  textures.load(Textures::Buttons, "assets/textures/Buttons.png");
+  textures.load_now(Textures::TitleScreen, "assets/textures/TitleScreen.png");
+  textures.load_now(Textures::Buttons, "assets/textures/Buttons.png");
 
   statisticsText.setFont(fonts.get(Fonts::Main));
   statisticsText.setPosition(5.f, 5.f);
@@ -118,6 +119,7 @@ void Application::registerStates()
   stateStack.registerState<TitleState>(States::Title);
   stateStack.registerState<MenuState>(States::Menu);
   stateStack.registerState<GameState>(States::Game);
+  stateStack.registerState<LoadingState>(States::Loading);
   stateStack.registerState<MultiplayerGameState>(States::HostGame, true);
   stateStack.registerState<MultiplayerGameState>(States::JoinGame, false);
   stateStack.registerState<PauseState>(States::Pause);

@@ -21,6 +21,7 @@ MenuState::MenuState(StateStack& stack, Context context) :
       {
         requestStackPop();
         requestStackPush(States::Game);
+        requestStackPush(States::Loading);
       });
 
   auto hostPlayButton = std::make_shared<GUI::Button>(context);
@@ -30,6 +31,7 @@ MenuState::MenuState(StateStack& stack, Context context) :
       {
         requestStackPop();
         requestStackPush(States::HostGame);
+        requestStackPush(States::Loading);
       });
 
   auto joinPlayButton = std::make_shared<GUI::Button>(context);
@@ -39,6 +41,7 @@ MenuState::MenuState(StateStack& stack, Context context) :
       {
         requestStackPop();
         requestStackPush(States::JoinGame);
+        requestStackPush(States::Loading);
       });
 
   auto settingsButton = std::make_shared<GUI::Button>(context);
